@@ -1,56 +1,5 @@
-class Node
-  attr_accessor :value, :left, :right, :errors, :parent_from_left, :parent_from_right, :klass
-
-  def initialize(value, klass)
-    @value = value
-    @left = nil
-    @right = nil
-    @parent_from_left = nil
-    @parent_from_right = nil
-    @errors = []
-    @klass = klass
-  end
-
-  ALLOWED_CLASSES = [String, Integer].freeze
-
-  def validate
-    @errors << "Value can't be vlank" if value.nil? || value == ''
-    @errors << "Value has wrong type - #{value.class}" unless ALLOWED_CLASSES.include?(value.class)
-    @errors << "Value has wrong type - #{klass} expected" unless value.class == klass
-    @errors.empty?
-  end
-  alias valid? validate
-
-  def errors_to_string
-    errors.join('; ')
-  end
-
-  def parent
-    parent_from_right || parent_from_left
-  end
-
-  def root?
-    @parent_from_left.nil? && @parent_from_right.nil?
-  end
-
-  def children?
-    !@left.nil? && !@right.nil?
-  end
-
-  def left?
-    !@left.nil?
-  end
-
-  def right?
-    !@right.nil?
-  end
-
-  def one_child?
-    !children? && (left_child? || right_child?)
-  end
-end
-
 class BinaryTree
+  include Navigate
 
   attr_accessor :root, :klass
 
@@ -141,54 +90,6 @@ class BinaryTree
     a.join(', ')
   end
 
-  def navigation
-    current_node = root
-    loop do
-      puts '_________________________________________________________'
-      puts 'Allowed commands:'
-      puts '   1 - level up'
-      puts '   2 - level down left'
-      puts '   3 - level down right'
-      puts '   4 - show current node'
-      puts '   5 - stop navigation'
-      puts '========================================================='
-
-      command = gets.chomp
-      unless (1..5).to_a.include? command.to_i
-        puts "Wrong command - #{command}"
-        next
-      end
-
-      case command.to_i
-      when 1
-        if current_node.root?
-          puts 'Error: this is a root node, there is no parent node!'
-        else
-          current_node = current_node.parent
-          show_node(current_node)
-        end
-      when 2
-        if current_node.left?
-          current_node = current_node.left
-          show_node(current_node)
-        else
-          puts 'Error: there is no left child!'
-        end
-      when 3
-        if current_node.right?
-          current_node = current_node.right
-          show_node(current_node)
-        else
-          puts 'Error: there is no right child!'
-        end
-      when 4
-        show_node(current_node)
-      when 5
-        return
-      end
-    end
-  end
-
   def show_node(current_node)
     puts 'Current node details:'
     puts "Value: #{current_node.value}"
@@ -204,20 +105,3 @@ class BinaryTree
     puts "Tree nodes: #{self.to_s}"
   end
 end
-
-tree = BinaryTree.new(50)
-tree.add(100)
-tree.add(30)
-tree.add(40)
-tree.add(60)
-tree.add(88)
-tree.add(10)
-tree.add(55)
-tree.add(5)
-puts "Tree nodes: #{tree.to_s}"
-tree.navigation
-tree.remove_node_with_children(60)
-puts "Tree nodes: #{tree.to_s}"
-tree.remove_node_with_children(30)
-puts "Tree nodes: #{tree.to_s}"
-
