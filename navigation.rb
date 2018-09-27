@@ -46,4 +46,19 @@ module Navigate
       end
     end
   end
+
+  def show_node(current_node)
+    puts 'Current node details:'
+    puts "Value: #{current_node.value}"
+    if current_node.children?
+      puts 'Has both children'
+    elsif current_node.left?
+      puts 'Has left child'
+    elsif current_node.right?
+      puts 'Has right child'
+    else
+      puts "Doesn't have children"
+    end
+    puts "Tree nodes: #{self.to_s}"
+  end
 end

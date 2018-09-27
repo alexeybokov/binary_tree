@@ -14,7 +14,7 @@ class Node
   ALLOWED_CLASSES = [String, Integer].freeze
 
   def validate
-    @errors << "Value can't be vlank" if value.nil? || value == ''
+    @errors << "Value can't be blank" if value.nil? || value == ''
     @errors << "Value has wrong type - #{value.class}" unless ALLOWED_CLASSES.include?(value.class)
     @errors << "Value has wrong type - #{klass} expected" unless value.class == klass
     @errors.empty?
